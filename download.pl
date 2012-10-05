@@ -75,8 +75,10 @@ elsif ($output_format eq "pdf" || $output_format eq "png") {
 	# Write  the SVG data to a temporary file
 	write_file( $input_file, $data );
 
+	my $zoom = ($output_format eq "png")?10:1;
+
 	# Run "rsvg-convert", create the PNG/PDF file.
-	system("rsvg-convert -o '$output_file' -f '$output_format' '$input_file'");
+	system("rsvg-convert -o '$output_file' -z '$zoom' -f '$output_format' '$input_file'");
 
 	# Read the binary output (PDF/PNG) file.
 	my $pdf_data = read_file( $output_file, {binmode=>':raw'});
