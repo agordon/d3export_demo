@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<!--
+This is a proof-of-concept demo for saving d3js graphics as PDF/PNG/SVG files.
+
+Copyright (C) 2012 by A. Gordon (gordon at cshl dot edu)
+All code written by me is released under BSD license: http://opensource.org/licenses/BSD-3-Clause
+(also uses several other libraries that have their own licenses).
+
+See here for more details:
+	https://github.com/agordon/d3export_demo
+
+See here for online demo:
+	http://d3export.cancan.cshl.edu/
+
+-->
+<head>
+<title>Export d3js/SVG as SVG/PDF</title>
+
+<!-- Use CDN'd libraries: Jquery, d3js, BootStrap, google-code-prettify -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="http://d3js.org/d3.v2.js"></script>
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap-combined.min.css" rel="stylesheet">
+<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/js/bootstrap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+
+<!-- couldn't find a CDN'd version of vkBeautify, so include it locally -->
+<script src="vkbeautify.0.99.00.beta.js"></script>
+
+<!-- couldn't find a CDN'd version of Google-Code-Prettify's CSS file, so include it inline.
+     Original version is here: http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css -->
+<style>
+.pln{color:#000}@media screen{.str{color:#080}.kwd{color:#008}.com{color:#800}.typ{color:#606}.lit{color:#066}.pun,.opn,.clo{color:#660}.tag{color:#008}.atn{color:#606}.atv{color:#080}.dec,.var{color:#606}.fun{color:red}}@media print,projection{.str{color:#060}.kwd{color:#006;font-weight:bold}.com{color:#600;font-style:italic}.typ{color:#404;font-weight:bold}.lit{color:#044}.pun,.opn,.clo{color:#440}.tag{color:#006;font-weight:bold}.atn{color:#404}.atv{color:#060}}pre.prettyprint{padding:2px;border:1px solid #888}ol.linenums{margin-top:0;margin-bottom:0}li.L0,li.L1,li.L2,li.L3,li.L5,li.L6,li.L7,li.L8{list-style-type:none}li.L1,li.L3,li.L5,li.L7,li.L9{background:#eee}
+</style>
+
+
+<!-- Put a black border around the d3js drawing area -->
+<style>
+div.chart {
+	width: 360px;
+	height: 180px;
+	border: 1px solid black;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="row">
+	<div class="span12">
+		<div class="page-header">
+			<h1>d3js/SVG Export demo</h1>
+		</div>
+		<a href="http://d3js.org">d3js</a> is a JavaScript library for manipulating documents based on data.
+		The library enables stunning client-side visualization inside the webbrowser.
+		<p>
+		Commonly in science-related websites (and possibly many others), users need to save the generated visualization in vectorized format (e.g. PDF), to be able to incorporate the graphics in presentation or publications.
+		<p>
+		This website demonstate one possible method of saving d3js graphics to PDF.
+		<p>
+		See below for more technical details.
+	</div>
+</div>
+
+
+<!-- ########### The Drawing Section ####### -->
+<div class="row">
+	<div class="span12">
+
+		<h2>d3js drawing</h2>
+
+		<button id="randomize" class="btn btn-info">Randomize positions &amp; colors</button>
+
+		<!-- This will be the d3js drawing element -->
+		<div class='chart' id='ex1'></div>
+	</div>
+</div>
+
+
+<!-- ########### The Export Section ####### -->
+<div class="row">
+	<div class="span12">
+		<h2>Export Drawing</h2>
+
+		<button class="btn btn-primary" id="show_svg_code" value="">
+			Show SVG code <small>(client Side)</small></button>
+		<br/>
+		<br/>
+		<button class="btn btn-success" id="save_as_svg" value="">
+			Save as SVG<small>(server side)</small></button>
+		<button class="btn btn-success" id="save_as_pdf" value="">
+			Save as PDF<small>(server side)</small></button>
+		<button class="btn btn-success" id="save_as_png" value="">
+			Save as PNG<small>(server side)</small></button>
+		<br>
+		<br>
+		<pre class="prettyprint lang-xml" id="svg_code">
+		SVG code will show up here.
+		</pre>
+	</div>
+</div>
+
+<!-- ########### The Details Section ####### -->
+<div class="row">
+	<div class="span12">
+		<h2>Technical details</h2>
+
+		This demo was developed by <a href="mailto:gordon@cshl.edu">gordon@cshl.edu</a>.
+
+		<h4>Data flow</h4>
+		<ul>
+			<li>Use d3js to generate graphics, on an HTML5 SVG element
+			<br/>
+			(client-side, see <code>create_d3js_drawing()</code> function in this HTML file.).</li>
+
+			<li>Use <code>XMLSerializer.serializeToString()</code> to extract the SVG/XML structure of the d3js drawing
+			<br/>
+			(client-side, see <code>show_svg_code()</code> function in this HTML file).</li>
+
+			<li>The SVG/XML data is submitted to the server's CGI script, which converts it to PDF/PNG and sends it back to the user as an attachment file to download
+			<br/>
+			(server side, see <a href="download.txt">Perl script</a>).</li>
+		</ul>
+
+		<h4>Future improvements</h4>
+		<ul>
+			<li>Saving files directly from the browser: not properly supported by all browsers, perhaps use <a href="http://eligrey.com/demos/FileSaver.js/">FileSaver.js</a> library</li>
+			<li>Generating PDF on the client side: Create an adaptation layer between d3js and <a href="http://code.google.com/p/jspdf/">jsPDF</a> library.</li>
+		</ul>
+
+		<h4>The following libraries were used</h4>
+		<ul>
+			<li><a href="http://d3js.org">d3js</a> - data-driven documents</li>
+			<li><a href="http://jquery.com/">JQuery</a></li>
+			<li><a href="http://twitter.github.com/bootstrap/">Twitter's Bootstrap</a> - web development framework</li>
+			<li><a href="https://code.google.com/p/google-code-prettify/">Google-Code-Prettify</a> - Javascip code prettifier (XML colorizing)</li>
+			<li><a href="http://www.eslinstructor.net/vkbeautify/">vkBeautify</a> Javascript code prettifier (XML indentation)</li>
+			<li><a href="https://live.gnome.org/LibRsvg">libRSVG</a> -SVG-to-PDF/PNG convertor (server-side).</li>
+		</ul>
+
+		<h4>Source Code</h4>
+		<ul>
+			<li>The client-side code (HTML/CSS/Javascript) is contained in a single file (which you're seeing now). Click "view source" to see it. It is heavily documented.</li>
+			<li>The server-side code is a <a href="download.txt">bare-bones Perl/CGI script.</a>. It basically runs <code>rsvg-convert</code> and returns the result as an attachment to download. You can implement the same functionallity in any programming language.</li>
+			<li>The entire code is available on <a href="https://github.com/agordon/d3export_demo">GitHub</a>, so fork me.</li>
+		</ul>
+
+
+	</div>
+</div>
+
+<!-- Hidden <FORM> to submit the SVG data to the server, which will convert it to SVG/PDF/PNG downloadable file.
+     The form is populated and submitted by the JavaScript below. -->
+<form id="svgform" method="post" action="download.pl">
+ <input type="hidden" id="output_format" name="output_format" value="">
+ <input type="hidden" id="data" name="data" value="">
+</form>
+
+
+</div> <!--container, end of Bootstrap-->
+
+<script type="text/javascript">
+
+/*
+   Utility function: populates the <FORM> with the SVG data
+   and the requested output format, and submits the form.
+*/
+function submit_download_form(output_format)
+{
+	// Get the d3js SVG element
+	var svg = document.getElementById("ex1");
+	// Extract the data as SVG text string
+	var svg_xml = (new XMLSerializer).serializeToString(svg);
+
+	// Submit the <FORM> to the server.
+	// The result will be an attachment file to download.
+	var form = document.getElementById("svgform");
+	form['output_format'].value = output_format;
+	form['data'].value = svg_xml ;
+	form.submit();
+}
+
+/*
+d3js Example code, based on the "Three Little Circles" tutorial:
+http://mbostock.github.com/d3/tutorial/circle.html
+*/
+function create_d3js_drawing()
+{
+	var data = [32, 57, 112],
+		dataEnter = data.concat(293),
+		dataExit = data.slice(0, 2),
+		w = 360,
+		h = 180,
+		x = d3.scale.ordinal().domain([57, 32, 112]).rangePoints([0, w], 1),
+		y = d3.scale.ordinal().domain(data).rangePoints([0, h], 2);
+
+	var svg = d3.select("#ex1").append("svg")
+		.attr("width", w)
+		.attr("height", h);
+
+	svg.selectAll(".little")
+		.data(data)
+		.enter().append("circle")
+		.attr("class", "little")
+		.attr("cx", x)
+		.attr("cy", y)
+		.attr("r", 12);
+
+	d3.select("#randomize").on("click", function() {
+		svg.selectAll(".little")
+			.transition()
+			.duration(750)
+			.attr("cx", function() { return Math.random() * w; })
+			.attr("cy", function() { return Math.random() * h; })
+			.attr("fill", function() { return '#'+Math.floor(Math.random()*16777215).toString(16); });
+		/* Random Hex Color in Javascript, from: http://paulirish.com/2009/random-hex-color-code-snippets/ */
+		});
+}
+
+function show_svg_code()
+{
+	// Get the d3js SVG element
+	var svg  = document.getElementById("ex1");
+	// Extract the data as SVG text string
+	var svg_xml = (new XMLSerializer).serializeToString(svg);
+
+	//Optional: prettify the XML with proper indentations
+	svg_xml = vkbeautify.xml(svg_xml);
+
+	// Set the content of the <pre> element with the XML
+	$("#svg_code").text(svg_xml);
+
+	//Optional: Use Google-Code-Prettifier to add colors.
+	prettyPrint();
+}
+
+/*
+    One-time initialization
+*/
+$(document).ready(function() {
+	create_d3js_drawing();
+
+	// on first visit, randomize the positions & colors
+	randomize.click();
+
+	// Attached actions to the buttons
+	$("#show_svg_code").click(function() { show_svg_code(); });
+
+	$("#save_as_svg").click(function() { submit_download_form("svg"); });
+
+	$("#save_as_pdf").click(function() { submit_download_form("pdf"); });
+
+	$("#save_as_png").click(function() { submit_download_form("png"); });
+});
+</script>
+
+</body>
+</html>
