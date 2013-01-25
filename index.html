@@ -168,7 +168,8 @@ div.chart {
 function submit_download_form(output_format)
 {
 	// Get the d3js SVG element
-	var svg = document.getElementById("ex1");
+	var tmp = document.getElementById("ex1");
+	var svg = tmp.getElementsByTagName("svg")[0];
 	// Extract the data as SVG text string
 	var svg_xml = (new XMLSerializer).serializeToString(svg);
 
@@ -223,7 +224,9 @@ function create_d3js_drawing()
 function show_svg_code()
 {
 	// Get the d3js SVG element
-	var svg  = document.getElementById("ex1");
+	var tmp  = document.getElementById("ex1");
+	var svg = tmp.getElementsByTagName("svg")[0];
+
 	// Extract the data as SVG text string
 	var svg_xml = (new XMLSerializer).serializeToString(svg);
 
