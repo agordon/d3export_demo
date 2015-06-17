@@ -2,7 +2,7 @@
 =pod
 This is a proof-of-concept demo for saving d3js graphics as PDF/PNG/SVG files.
 
-Copyright (C) 2012 by A. Gordon (gordon at cshl dot edu)
+Copyright (C) 2012,2014 by A. Gordon (assafgordon@gmail.com)
 All code written by me is released under BSD license: http://opensource.org/licenses/BSD-3-Clause
 (also uses several other libraries that have their own licenses).
 
@@ -10,7 +10,7 @@ See here for more details:
 	https://github.com/agordon/d3export_demo
 
 See here for online demo:
-	http://d3export.cancan.cshl.edu/
+	http://d3export.housegordon.org/
 =cut
 use strict;
 use warnings;
